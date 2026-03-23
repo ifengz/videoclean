@@ -1,6 +1,9 @@
 name: Build Windows Directory Release
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
