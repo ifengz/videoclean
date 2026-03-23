@@ -36,5 +36,8 @@ if errorlevel 1 (
   exit /b 1
 )
 
+if exist dist\VideoCleaner\ffmpeg rmdir /s /q dist\VideoCleaner\ffmpeg
+xcopy /E /I /Y ffmpeg dist\VideoCleaner\ffmpeg >nul
+
 echo [OK] 打包完成：dist\VideoCleaner
 echo [OK] 打包目录已包含 ffmpeg，可直接发整个 dist\VideoCleaner

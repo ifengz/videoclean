@@ -9,6 +9,7 @@ from video_cleaner.core import (
     collect_video_files,
     output_path_for_input,
     preferred_start_dir,
+    default_ffmpeg_path,
     process_video,
 )
 
@@ -107,6 +108,18 @@ class VideoCleanerCoreTests(unittest.TestCase):
         fallback = Path("D:/base")
         selected = [Path("D:/video_work/video_2.mp4")]
         self.assertEqual(preferred_start_dir(selected, fallback), Path("D:/video_work"))
+
+    def test_default_ffmpeg_path_uses_internal_bundle_when_present(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            internal_ffmpeg = root / "_internal" / "ffmpeg"
+            internal_ffmpeg.mkdir(parents=True)
+            executable = internal_ffmpeg / "ffmpeg.exe"
+            executable.write_text("stub")
+
+            resolved = default_ffmpeg_path(root)
+
+            self.assertEqual(resolved, executable)
 
     def test_process_video_raises_when_ffmpeg_missing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:

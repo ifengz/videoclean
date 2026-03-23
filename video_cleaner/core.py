@@ -31,8 +31,23 @@ def app_base_dir() -> Path:
 
 def default_ffmpeg_path(base_dir: Path | None = None) -> Path:
     root = base_dir or app_base_dir()
-    executable = "ffmpeg.exe" if sys.platform.startswith("win") else "ffmpeg"
-    return root / "ffmpeg" / executable
+    executable_names = ["ffmpeg.exe", "ffmpeg"] if sys.platform.startswith("win") else ["ffmpeg", "ffmpeg.exe"]
+    candidates: list[Path] = []
+
+    for executable in executable_names:
+        candidates.append(root / "ffmpeg" / executable)
+        candidates.append(root / "_internal" / "ffmpeg" / executable)
+
+    frozen_bundle_dir = getattr(sys, "_MEIPASS", None)
+    if frozen_bundle_dir:
+        for executable in executable_names:
+            candidates.append(Path(frozen_bundle_dir) / "ffmpeg" / executable)
+
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+
+    return candidates[0]
 
 
 def collect_video_files(paths: list[Path]) -> list[Path]:
