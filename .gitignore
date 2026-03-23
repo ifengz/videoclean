@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.pyc
+output/
+dist/
+dist-bat/
+团队发包/
+task_plan.md
+findings.md
+progress.md
+tasks/
+lQLPJxFIiiyVMb3NA3fNBjqwq_ZXQJMCgqgJl9hW6HLSAA_1594_887.png

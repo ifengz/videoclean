@@ -1,0 +1,30 @@
+name: Build Windows Directory Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyInstaller
+        run: py -3 -m pip install pyinstaller
+
+      - name: Build Windows directory release
+        run: .\build_windows.bat
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VideoCleaner-windows-directory
+          path: dist/VideoCleaner
+          if-no-files-found: error
