@@ -6,6 +6,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -25,9 +28,35 @@ jobs:
       - name: Build Windows directory release
         run: .\build_windows.bat
 
+      - name: Prepare release metadata
+        id: meta
+        shell: pwsh
+        run: |
+          $shortSha = "${env:GITHUB_SHA}".Substring(0, 7)
+          "tag_name=build-$shortSha" >> $env:GITHUB_OUTPUT
+          "release_name=VideoCleaner build $shortSha" >> $env:GITHUB_OUTPUT
+
+      - name: Archive build output
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist/VideoCleaner/* -DestinationPath dist/VideoCleaner-windows-directory.zip -Force
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: VideoCleaner-windows-directory
           path: dist/VideoCleaner
           if-no-files-found: error
+
+      - name: Create or update release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag_name }}
+          name: ${{ steps.meta.outputs.release_name }}
+          body: |
+            自动构建的 Windows 目录版。
+
+            提交：${{ github.sha }}
+          draft: false
+          prerelease: false
+          files: dist/VideoCleaner-windows-directory.zip

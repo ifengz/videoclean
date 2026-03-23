@@ -94,6 +94,20 @@ VideoCleaner-windows-directory
 
 下载后的内容就是可发团队的 Windows 目录版。
 
+## 自动 Release
+
+工作流现在会在打包成功后自动创建 Release，并上传 zip 包。
+
+规则：
+
+| 项目 | 规则 |
+| --- | --- |
+| Tag | `build-提交短SHA` |
+| Release 名称 | `VideoCleaner build 提交短SHA` |
+| 上传文件 | `VideoCleaner-windows-directory.zip` |
+
+你以后也可以直接在仓库的 `Releases` 页面下载，不一定要去 `Actions` 里拿 artifact。
+
 ## BAT 目录版
 
 如果你不要 `.exe` 打包，直接用这一个脚本：
